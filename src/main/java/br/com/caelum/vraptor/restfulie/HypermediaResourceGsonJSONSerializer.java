@@ -12,12 +12,12 @@ import br.com.caelum.vraptor.serialization.gson.GsonJSONSerializer;
 
 import com.google.gson.Gson;
 
-public class HipermediaResourceGsonJSONSerializer extends GsonJSONSerializer {
+public class HypermediaResourceGsonJSONSerializer extends GsonJSONSerializer {
 	
 	private final Restfulie restfulie;
 	private final Configuration config;
 
-	public HipermediaResourceGsonJSONSerializer(Gson gson, Writer writer, Restfulie restfulie, Configuration config) {
+	public HypermediaResourceGsonJSONSerializer(Gson gson, Writer writer, Restfulie restfulie, Configuration config) {
 		super(gson, writer);
 		this.restfulie = restfulie;
 		this.config = config;

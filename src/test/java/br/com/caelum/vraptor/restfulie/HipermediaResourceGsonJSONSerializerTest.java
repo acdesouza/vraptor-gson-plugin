@@ -55,7 +55,7 @@ public class HipermediaResourceGsonJSONSerializerTest {
 	private ByteArrayOutputStream stream;
 	private PrintWriter writer = null;
 
-	private HipermediaResourceGsonJSONSerializer gson;
+	private HypermediaResourceGsonJSONSerializer gson;
 
 	@Before
 	public void setup() throws IOException {
@@ -69,7 +69,7 @@ public class HipermediaResourceGsonJSONSerializerTest {
 
 		stream = new ByteArrayOutputStream();
 		writer = new PrintWriter(stream, true);
-		gson = new HipermediaResourceGsonJSONSerializer(new Gson(), writer, restfulie, config);
+		gson = new HypermediaResourceGsonJSONSerializer(new Gson(), writer, restfulie, config);
 	}
 	@Test
 	public void shouldSerializeNoLinksIfThereIsNoTransition() {

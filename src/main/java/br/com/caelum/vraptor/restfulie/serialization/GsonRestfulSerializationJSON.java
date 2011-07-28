@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.com.caelum.vraptor.config.Configuration;
 import br.com.caelum.vraptor.ioc.Component;
 import br.com.caelum.vraptor.ioc.RequestScoped;
-import br.com.caelum.vraptor.restfulie.HipermediaResourceGsonJSONSerializer;
+import br.com.caelum.vraptor.restfulie.HypermediaResourceGsonJSONSerializer;
 import br.com.caelum.vraptor.restfulie.Restfulie;
 import br.com.caelum.vraptor.serialization.SerializerBuilder;
 import br.com.caelum.vraptor.serialization.gson.GsonJSONSerialization;
@@ -30,6 +30,6 @@ public class GsonRestfulSerializationJSON extends GsonJSONSerialization {
 	}
 
 	public SerializerBuilder getSerializer(Writer writer) {
-        return new HipermediaResourceGsonJSONSerializer(getGson(), writer, restfulie, config);
+        return new HypermediaResourceGsonJSONSerializer(getGson(), writer, restfulie, config);
     }
 }

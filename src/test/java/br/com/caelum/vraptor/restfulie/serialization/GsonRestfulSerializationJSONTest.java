@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.caelum.vraptor.restfulie.HipermediaResourceGsonJSONSerializer;
+import br.com.caelum.vraptor.restfulie.HypermediaResourceGsonJSONSerializer;
 import br.com.caelum.vraptor.serialization.Serializer;
 
 public class GsonRestfulSerializationJSONTest {
@@ -37,6 +37,6 @@ public class GsonRestfulSerializationJSONTest {
 	public void shouldReturnAnSerializerInstanceWithSupportToLinkConvertersBasedOnReflection() {
 		GsonRestfulSerializationJSON serialization = new GsonRestfulSerializationJSON(response, null, null);
 		Serializer serializer = serialization.getSerializer(null);
-		assertThat(serializer.getClass(), is(typeCompatibleWith(HipermediaResourceGsonJSONSerializer.class)));
+		assertThat(serializer.getClass(), is(typeCompatibleWith(HypermediaResourceGsonJSONSerializer.class)));
 	}
 }

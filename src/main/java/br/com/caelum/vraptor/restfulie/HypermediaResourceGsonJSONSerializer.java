@@ -27,18 +27,20 @@ public class HypermediaResourceGsonJSONSerializer extends GsonJSONSerializer {
 	protected String convertUsingGson(Object root) {
 		String defaultConversion = getGson().toJson(root);
 
-		HypermediaResource resource = (HypermediaResource) root;
-		RelationBuilder builder = restfulie.newRelationBuilder();
-		resource.configureRelations(builder);
-
 		String linksConverted = null;
-		if( !builder.getRelations().isEmpty() ) {
-			linksConverted = ",\"links\":";
-			List<Link> list = new ArrayList<Link>();
-			for (Relation t : builder.getRelations()) {
-				list.add( new Link(t.getName(), config.getApplicationPath() + t.getUri()) );
+		if( root instanceof HypermediaResource ) {
+			HypermediaResource resource = (HypermediaResource) root;
+			RelationBuilder builder = restfulie.newRelationBuilder();
+			resource.configureRelations(builder);
+	
+			if( !builder.getRelations().isEmpty() ) {
+				linksConverted = ",\"links\":";
+				List<Link> list = new ArrayList<Link>();
+				for (Relation t : builder.getRelations()) {
+					list.add( new Link(t.getName(), config.getApplicationPath() + t.getUri()) );
+				}
+				linksConverted += getGson().toJson(list);
 			}
-			linksConverted += getGson().toJson(list);
 		}
 
 		String hypermediaResourceConverted = defaultConversion.substring(0, defaultConversion.length() - 1) + linksConverted + "}";

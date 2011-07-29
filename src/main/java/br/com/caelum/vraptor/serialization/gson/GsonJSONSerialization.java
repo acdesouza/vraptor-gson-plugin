@@ -2,6 +2,8 @@ package br.com.caelum.vraptor.serialization.gson;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Type;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +16,10 @@ import br.com.caelum.vraptor.view.ResultException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 /**
  * Gson implementation for JSONSerialization
@@ -33,17 +39,14 @@ public class GsonJSONSerialization implements JSONSerialization {
 		this.response = response;
 	}
 
-	@Override
 	public boolean accepts(String format) {
 		return "json".equals(format);
 	}
 
-	@Override
 	public <T> Serializer from(T object) {
 		return from(object, null);
 	}
 
-	@Override
 	public <T> Serializer from(T object, String alias) {
 		try {
 			response.setContentType("application/json");
@@ -61,17 +64,30 @@ public class GsonJSONSerialization implements JSONSerialization {
 	protected Gson getGson() {
 		gsonBuilder = new GsonBuilder();
 		gsonBuilder.serializeNulls();
+		gsonBuilder.registerTypeAdapter(Date.class, new DateSerializer());
+		gsonBuilder.registerTypeAdapter(java.sql.Date.class, new SqlDateSerializer());
 		if( indented ) gsonBuilder.setPrettyPrinting();
 		return gsonBuilder.create();
 	}
+	
+	private class DateSerializer implements JsonSerializer<Date> {
+	  public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+	    return new JsonPrimitive(src.toString());
+	  }
+	}
 
-	@Override
+	private class SqlDateSerializer implements JsonSerializer<java.sql.Date> {
+		public JsonElement serialize(java.sql.Date src, Type typeOfSrc, JsonSerializationContext context) {
+			return new JsonPrimitive(new Date(src.getTime()).toString());
+		}
+	}
+	
+
 	public <T> NoRootSerialization withoutRoot() {
 		return this;
 	}
 
-	private boolean indented;
-	@Override
+	private boolean indented = false;
 	public JSONSerialization indented() {
 		indented = true;
 		return this;

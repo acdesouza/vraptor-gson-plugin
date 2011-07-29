@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +26,8 @@ public class GsonJSONSerializationTest {
 	private GsonJSONSerialization serialization;
 	private ByteArrayOutputStream stream;
 	private PrintWriter writer = null;
+	
+	private Date defaultTestDate;
 
 	@Before
 	public void setup() throws Exception {
@@ -34,12 +38,16 @@ public class GsonJSONSerializationTest {
 		when(response.getWriter()).thenReturn(writer);
 
 		this.serialization = new GsonJSONSerialization(response);
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(1982, 7, 28, 0, 0, 0);
+		defaultTestDate = calendar.getTime();
 	}
 
 	@Test
 	public void shouldSerializeAllNullFields() throws IOException {
-		String expectedResult = "{\"client\":{\"name\":\"guilherme silveira\",\"address\":null},\"price\":15.0,\"comments\":null,\"items\":[]}";
-		Order order = new Order(new Client("guilherme silveira"), 15.0, null);
+		String expectedResult = "{\"client\":{\"name\":\"guilherme silveira\",\"address\":null},\"price\":15.0,\"comments\":null,\"date\":\"Sat Aug 28 00:00:00 BRT 1982\",\"items\":[]}";
+		Order order = new Order(new Client("guilherme silveira"), 15.0, null, defaultTestDate);
 		serialization.from(order).serialize();
 		writer.flush();
 		assertThat(result(), is(equalTo(expectedResult)));
@@ -47,8 +55,8 @@ public class GsonJSONSerializationTest {
 
 	@Test
 	public void shouldSerializeAllBasicFieldsIdented() {
-		String expectedResult = "{\n  \"client\": {\n    \"name\": \"guilherme silveira\",\n    \"address\": null\n  },\n  \"price\": 15.0,\n  \"comments\": \"pack it nicely, please\",\n  \"items\": []\n}";
-		Order order = new Order(new Client("guilherme silveira"), 15.0, "pack it nicely, please");
+		String expectedResult = "{\n  \"client\": {\n    \"name\": \"guilherme silveira\",\n    \"address\": null\n  },\n  \"price\": 15.0,\n  \"comments\": \"pack it nicely, please\",\n  \"date\": \"Sat Aug 28 00:00:00 BRT 1982\",\n  \"items\": []\n}";
+		Order order = new Order(new Client("guilherme silveira"), 15.0, "pack it nicely, please", defaultTestDate);
 		serialization.indented().from(order).serialize();
 		writer.flush();
 		assertEquals(result(), expectedResult);
@@ -58,7 +66,7 @@ public class GsonJSONSerializationTest {
 	public static enum Type { basic, advanced }
 	class BasicOrder extends Order {
 		public BasicOrder(Client client, double price, String comments, Type type) {
-			super(client, price, comments);
+			super(client, price, comments, null);
 			this.type = type;
 		}
 		@SuppressWarnings("unused")
@@ -76,11 +84,11 @@ public class GsonJSONSerializationTest {
 	
 	@Test
 	public void shouldSerializeCollection() {
-		String expectedResult = "{\"client\":{\"name\":\"guilherme silveira\",\"address\":null},\"price\":15.0,\"comments\":\"pack it nicely, please\",\"items\":[]}";
+		String expectedResult = "{\"client\":{\"name\":\"guilherme silveira\",\"address\":null},\"price\":15.0,\"comments\":\"pack it nicely, please\",\"date\":\"Sat Aug 28 00:00:00 BRT 1982\",\"items\":[]}";
 		expectedResult += "," + expectedResult;
 		expectedResult = "[" + expectedResult + "]";
 
-		Order order = new Order(new Client("guilherme silveira"), 15.0, "pack it nicely, please");
+		Order order = new Order(new Client("guilherme silveira"), 15.0, "pack it nicely, please", defaultTestDate);
 		serialization.from(Arrays.asList(order, order)).serialize();
 		writer.flush();
 		assertEquals(result(), expectedResult);
@@ -122,12 +130,14 @@ public class GsonJSONSerializationTest {
 		Client client;
 		double price;
 		String comments;
+		Date date;
 		List<Item> items;
 
-		public Order(Client client, double price, String comments, Item... items) {
+		public Order(Client client, double price, String comments, Date date, Item... items) {
 			this.client = client;
 			this.price = price;
 			this.comments = comments;
+			this.date = date;
 			this.items = new ArrayList<Item>(Arrays.asList(items));
 		}
 
@@ -143,7 +153,7 @@ public class GsonJSONSerializationTest {
 		private final String notes;
 
 		public AdvancedOrder(Client client, double price, String comments, String notes) {
-			super(client, price, comments);
+			super(client, price, comments, null);
 			this.notes = notes;
 		}
 

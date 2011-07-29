@@ -25,23 +25,19 @@ public class GsonJSONSerializer implements SerializerBuilder {
 		this.writer = writer;
 	}
 
-	@Override
 	public Serializer exclude(String... names) {
 		// https://sites.google.com/site/gson/gson-user-guide#TOC-Excluding-Fields-From-Serialization
 		return this;
 	}
 
-	@Override
 	public Serializer include(String... names) {
 		return this;
 	}
 
-	@Override
 	public Serializer recursive() {
 		return this;
 	}
 
-	@Override
 	public void serialize() {
 		try {
 			getWriter().write(convertUsingGson(root));
@@ -62,12 +58,10 @@ public class GsonJSONSerializer implements SerializerBuilder {
 		return writer;
 	}
 
-	@Override
 	public <T> Serializer from(T object) {
 		return from(object, null);
 	}
 
-	@Override
 	public <T> Serializer from(T object, String alias) {
 		this.root = object;
 		return this;

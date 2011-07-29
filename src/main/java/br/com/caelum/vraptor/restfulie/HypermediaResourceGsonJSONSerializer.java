@@ -27,7 +27,7 @@ public class HypermediaResourceGsonJSONSerializer extends GsonJSONSerializer {
 	protected String convertUsingGson(Object root) {
 		String defaultConversion = getGson().toJson(root);
 
-		String linksConverted = null;
+		String linksConverted = "";
 		if( root instanceof HypermediaResource ) {
 			HypermediaResource resource = (HypermediaResource) root;
 			RelationBuilder builder = restfulie.newRelationBuilder();

@@ -74,7 +74,7 @@ public class HipermediaResourceGsonJSONSerializerTest {
 	@Test
 	public void shouldSerializeNoLinksIfThereIsNoTransition() {
 		gson.from(resource).serialize();
-		writer.flush();
+		
 		assertThat(result(), not(containsString("links")));
 	}
 
@@ -86,7 +86,6 @@ public class HipermediaResourceGsonJSONSerializerTest {
 
 		when(builder.getRelations()).thenReturn(Arrays.asList(kill));
 		gson.from(resource).serialize();
-		writer.flush();
 
 		String expectedLinks = "\"links\":[{\"rel\":\"kill\",\"href\":\"http://www.caelum.com.br/kill\"}]";
 		assertThat(result(), containsString(expectedLinks));
@@ -104,13 +103,13 @@ public class HipermediaResourceGsonJSONSerializerTest {
 
 		when(builder.getRelations()).thenReturn(Arrays.asList(kill, ressurect));
 		gson.from(resource).serialize();
-		writer.flush();
 
 		String expectedLinks = "\"links\":[{\"rel\":\"kill\",\"href\":\"http://www.caelum.com.br/kill\"},{\"rel\":\"ressurect\",\"href\":\"http://www.caelum.com.br/ressurect\"}]";
 		assertThat(result(), containsString(expectedLinks));
 	}
 
 	private String result() {
+		writer.flush();
 		return new String(stream.toByteArray());
 	}
 }

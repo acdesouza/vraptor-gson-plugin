@@ -41,11 +41,10 @@ public class HypermediaResourceGsonJSONSerializer extends GsonJSONSerializer {
 					list.add( new Link(t.getName(), config.getApplicationPath() + t.getUri()) );
 				}
 				linksConverted += getGson().toJson(list);
-				linksConverted += "}";
 			}
 		}
 
-		String hypermediaResourceConverted = defaultConversion.substring(0, defaultConversion.length() - 1) + linksConverted;
+		String hypermediaResourceConverted = defaultConversion.substring(0, defaultConversion.length() - 1) + linksConverted + "}";
 		return hypermediaResourceConverted;
 	}
 }

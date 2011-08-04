@@ -27,7 +27,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +53,7 @@ import com.google.gson.Gson;
  * @author ac de souza
  */
 public class HipermediaResourceGsonJSONSerializerTest {
+	private static final Logger log = Logger.getLogger(HipermediaResourceGsonJSONSerializerTest.class);
 
 	private @Mock Restfulie restfulie;
 	private @Mock RelationBuilder builder;
@@ -59,6 +63,8 @@ public class HipermediaResourceGsonJSONSerializerTest {
 	private PrintWriter writer = null;
 
 	private HypermediaResourceGsonJSONSerializer gson;
+
+	private Date defaultTestDate;
 
 	@Before
 	public void setup() throws IOException {
@@ -73,6 +79,10 @@ public class HipermediaResourceGsonJSONSerializerTest {
 		stream = new ByteArrayOutputStream();
 		writer = new PrintWriter(stream, true);
 		gson = new HypermediaResourceGsonJSONSerializer(new Gson(), writer, restfulie, config);
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(1982, 7, 28, 0, 0, 0);
+		defaultTestDate = calendar.getTime();
 	}
 	@Test
 	public void shouldSerializeNoLinksIfThereIsNoTransition() {
@@ -140,8 +150,64 @@ public class HipermediaResourceGsonJSONSerializerTest {
 		assertEquals("http://www.caelum.com.br/ressurect", jsonLink_2.get("href"));
 	}
 
+	public static class Order implements HypermediaResource {
+		Client client;
+		double price;
+		String comments;
+		Date date;
+
+		public Order(Client client, double price, String comments, Date date) {
+			this.client = client;
+			this.price = price;
+			this.comments = comments;
+			this.date = date;
+		}
+
+		public void configureRelations(RelationBuilder builder) {
+			builder.relation("kill").at("/kill");
+		}
+	}
+	
+	public static class Client {
+		String name;
+		public Client(String name) {
+			this.name = name;
+		}
+	}
+
+	@Test
+	public void shouldSerializeCollectionWithoutLinks() throws Exception {
+		Order order = new Order(new Client("guilherme silveira"), 15.0, "pack it nicely, please", defaultTestDate);
+		gson.from(Arrays.asList(order, order)).serialize();
+
+		JSONArray jsonListOrders = new JSONArray(result());
+		assertEquals(2, jsonListOrders.length());
+
+		JSONObject jsonOrder_1 = jsonListOrders.getJSONObject(0);
+		assertNotSame(JSONObject.NULL, jsonOrder_1);
+
+		try {
+			JSONArray jsonListLinks = jsonOrder_1.getJSONArray("links");
+			fail("Não deveria ter uma lista de links aqui: "+ jsonListLinks.toString());
+		} catch (JSONException e) {
+			assertEquals("JSONObject[\"links\"] not found.", e.getMessage());
+		}
+
+		JSONObject jsonOrder_2 = jsonListOrders.getJSONObject(1);
+		assertNotSame(JSONObject.NULL, jsonOrder_2);
+
+		try {
+			JSONArray jsonListLinks = jsonOrder_2.getJSONArray("links");
+			fail("Não deveria ter uma lista de links aqui: "+ jsonListLinks.toString());
+		} catch (JSONException e) {
+			assertEquals("JSONObject[\"links\"] not found.", e.getMessage());
+		}
+	}
+
 	private String result() {
 		writer.flush();
-		return new String(stream.toByteArray());
+		String strResult = new String(stream.toByteArray());
+		log.debug("JSON: "+ strResult);
+		return strResult;
 	}
 }

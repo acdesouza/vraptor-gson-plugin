@@ -26,7 +26,7 @@ public class HypermediaResourceGsonJSONSerializer extends GsonJSONSerializer {
 
 	@Override
 	protected String convertUsingGson(Object root) {
-		String defaultConversion = getGson().toJson(root);
+		String jsonConverted = getGson().toJson(root);
 
 		String linksConverted = "";
 		if( root instanceof HypermediaResource ) {
@@ -41,10 +41,10 @@ public class HypermediaResourceGsonJSONSerializer extends GsonJSONSerializer {
 					list.add( new Link(t.getName(), config.getApplicationPath() + t.getUri()) );
 				}
 				linksConverted += getGson().toJson(list);
+				jsonConverted = jsonConverted.substring(0, jsonConverted.length() - 1) + linksConverted + "}";
 			}
 		}
 
-		String hypermediaResourceConverted = defaultConversion.substring(0, defaultConversion.length() - 1) + linksConverted + "}";
-		return hypermediaResourceConverted;
+		return jsonConverted;
 	}
 }

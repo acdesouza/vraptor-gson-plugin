@@ -23,22 +23,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<distributionManagement>
-		<repository>
-			<id>archiva.internal</id>
-			<url>http://cvs.globoi.com/archiva/repository/internal</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<snapshotRepository>
-			<id>archiva.snapshots</id>
-			<url>http://cvs.globoi.com/archiva/repository/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</snapshotRepository>
-	</distributionManagement>
 
 	<dependencies>
 		<dependency>

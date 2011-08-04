@@ -1,15 +1,11 @@
 package br.com.beyondclick.vraptor.serialization.gson;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +15,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,21 +43,34 @@ public class GsonJSONSerializationTest {
 	}
 
 	@Test
-	public void shouldSerializeAllNullFields() throws IOException {
-		String expectedResult = "{\"client\":{\"name\":\"guilherme silveira\",\"address\":null},\"price\":15.0,\"comments\":null,\"date\":\"Sat Aug 28 00:00:00 BRT 1982\",\"items\":[]}";
+	public void shouldSerializeAllNullFields() throws Exception {
 		Order order = new Order(new Client("guilherme silveira"), 15.0, null, defaultTestDate);
 		serialization.from(order).serialize();
-		writer.flush();
-		assertThat(result(), is(equalTo(expectedResult)));
+
+		JSONObject jsonOrder = new JSONObject(result());
+		assertEquals(15.0, jsonOrder.getDouble("price"), 0);
+		assertEquals(JSONObject.NULL, jsonOrder.get("comments"));
+		assertEquals("Sat Aug 28 00:00:00 BRT 1982", jsonOrder.get("date"));
+		
+		JSONObject jsonClient = jsonOrder.getJSONObject("client");
+		assertEquals("guilherme silveira", jsonClient.get("name"));
+		assertEquals(JSONObject.NULL, jsonClient.get("address"));
+		
+		JSONArray jsonItems = jsonOrder.getJSONArray("items");
+		assertEquals(0, jsonItems.length());
 	}
 
 	@Test
-	public void shouldSerializeAllBasicFieldsIdented() {
+	public void shouldSerializeAllBasicFieldsIdented() throws Exception {
 		String expectedResult = "{\n  \"client\": {\n    \"name\": \"guilherme silveira\",\n    \"address\": null\n  },\n  \"price\": 15.0,\n  \"comments\": \"pack it nicely, please\",\n  \"date\": \"Sat Aug 28 00:00:00 BRT 1982\",\n  \"items\": []\n}";
 		Order order = new Order(new Client("guilherme silveira"), 15.0, "pack it nicely, please", defaultTestDate);
 		serialization.indented().from(order).serialize();
-		writer.flush();
-		assertEquals(result(), expectedResult);
+
+		String result = result();
+		assertEquals(result, expectedResult);
+		
+		JSONObject jsonOrder = new JSONObject(result);
+		assertNotSame(JSONObject.NULL, jsonOrder);
 	}
 	
 	
@@ -74,24 +85,34 @@ public class GsonJSONSerializationTest {
 	}
 
 	@Test
-	public void shouldSerializeEnumFields() {
+	public void shouldSerializeEnumFields() throws Exception {
 		Order order = new BasicOrder(new Client("guilherme silveira"), 15.0, "pack it nicely, please", Type.basic);
 		serialization.from(order).serialize();
-		writer.flush();
-		String result = result();
-		assertThat(result, containsString("\"type\":\"basic\""));
+
+		JSONObject jsonOrder = new JSONObject(result());
+		assertEquals("basic", jsonOrder.get("type"));
 	}
-	
+
 	@Test
-	public void shouldSerializeCollection() {
+	public void shouldSerializeCollection() throws Exception {
 		String expectedResult = "{\"client\":{\"name\":\"guilherme silveira\",\"address\":null},\"price\":15.0,\"comments\":\"pack it nicely, please\",\"date\":\"Sat Aug 28 00:00:00 BRT 1982\",\"items\":[]}";
 		expectedResult += "," + expectedResult;
 		expectedResult = "[" + expectedResult + "]";
 
 		Order order = new Order(new Client("guilherme silveira"), 15.0, "pack it nicely, please", defaultTestDate);
 		serialization.from(Arrays.asList(order, order)).serialize();
-		writer.flush();
-		assertEquals(result(), expectedResult);
+
+		String result = result();
+		assertEquals(result, expectedResult);
+		
+		JSONArray jsonListOrders = new JSONArray(result);
+		assertEquals(2, jsonListOrders.length());
+		
+		JSONObject jsonOrder_1 = jsonListOrders.getJSONObject(0);
+		assertNotSame(JSONObject.NULL, jsonOrder_1);
+
+		JSONObject jsonOrder_2 = jsonListOrders.getJSONObject(1);
+		assertNotSame(JSONObject.NULL, jsonOrder_2);
 	}
 
 	public static class Address {
@@ -160,6 +181,7 @@ public class GsonJSONSerializationTest {
 	}
 
 	private String result() {
+		writer.flush();
 		return new String(stream.toByteArray());
 	}
 }

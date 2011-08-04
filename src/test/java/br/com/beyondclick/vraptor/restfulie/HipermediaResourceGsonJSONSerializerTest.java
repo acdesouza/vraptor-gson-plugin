@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package br.com.caelum.vraptor.restfulie;
+package br.com.beyondclick.vraptor.restfulie;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;

@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.restfulie;
+package br.com.beyondclick.vraptor.restfulie;
 
 /**
  * Represent a link to Resources in a JSON Restful serialization.

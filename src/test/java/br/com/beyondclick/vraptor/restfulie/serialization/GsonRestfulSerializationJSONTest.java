@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.restfulie.serialization;
+package br.com.beyondclick.vraptor.restfulie.serialization;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.typeCompatibleWith;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.caelum.vraptor.restfulie.HypermediaResourceGsonJSONSerializer;
+import br.com.beyondclick.vraptor.restfulie.HypermediaResourceGsonJSONSerializer;
 import br.com.caelum.vraptor.serialization.Serializer;
 
 public class GsonRestfulSerializationJSONTest {

@@ -1,4 +1,4 @@
-package br.com.caelum.vraptor.serialization.gson;
+package br.com.beyondclick.vraptor.serialization.gson;
 
 import java.io.IOException;
 import java.io.Writer;

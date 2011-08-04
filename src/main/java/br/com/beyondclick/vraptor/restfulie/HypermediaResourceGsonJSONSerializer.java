@@ -1,14 +1,15 @@
-package br.com.caelum.vraptor.restfulie;
+package br.com.beyondclick.vraptor.restfulie;
 
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.beyondclick.vraptor.serialization.gson.GsonJSONSerializer;
 import br.com.caelum.vraptor.config.Configuration;
+import br.com.caelum.vraptor.restfulie.Restfulie;
 import br.com.caelum.vraptor.restfulie.hypermedia.HypermediaResource;
 import br.com.caelum.vraptor.restfulie.relation.Relation;
 import br.com.caelum.vraptor.restfulie.relation.RelationBuilder;
-import br.com.caelum.vraptor.serialization.gson.GsonJSONSerializer;
 
 import com.google.gson.Gson;
 

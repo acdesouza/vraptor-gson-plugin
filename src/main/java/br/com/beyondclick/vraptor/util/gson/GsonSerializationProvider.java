@@ -1,9 +1,9 @@
-package br.com.caelum.vraptor.util.gson;
+package br.com.beyondclick.vraptor.util.gson;
 
+import br.com.beyondclick.vraptor.restfulie.serialization.GsonRestfulSerializationJSON;
+import br.com.beyondclick.vraptor.serialization.gson.GsonJSONSerialization;
 import br.com.caelum.vraptor.ComponentRegistry;
 import br.com.caelum.vraptor.ioc.spring.SpringProvider;
-import br.com.caelum.vraptor.restfulie.serialization.GsonRestfulSerializationJSON;
-import br.com.caelum.vraptor.serialization.gson.GsonJSONSerialization;
 
 public class GsonSerializationProvider extends SpringProvider {
 	

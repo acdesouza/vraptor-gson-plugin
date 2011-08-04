@@ -17,9 +17,9 @@
 
 package br.com.beyondclick.vraptor.restfulie;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -75,11 +78,20 @@ public class HipermediaResourceGsonJSONSerializerTest {
 	public void shouldSerializeNoLinksIfThereIsNoTransition() {
 		gson.from(resource).serialize();
 		
-		assertThat(result(), not(containsString("links")));
+		try {
+			JSONObject jsonOrder = new JSONObject(result());
+			assertNotSame(JSONObject.NULL, jsonOrder);
+	
+			JSONArray jsonListLinks;
+			jsonListLinks = jsonOrder.getJSONArray("links");
+			fail("Não deveria ter uma lista de links aqui: "+ jsonListLinks.toString());
+		} catch (JSONException e) {
+			assertEquals("JSONObject[\"links\"] not found.", e.getMessage());
+		}
 	}
 
 	@Test
-	public void shouldSerializeOneLinkIfThereIsATransition() {
+	public void shouldSerializeOneLinkIfThereIsATransition() throws Exception {
 		Relation kill = mock(Relation.class);
 		when(kill.getName()).thenReturn("kill");
 		when(kill.getUri()).thenReturn("/kill");
@@ -87,12 +99,20 @@ public class HipermediaResourceGsonJSONSerializerTest {
 		when(builder.getRelations()).thenReturn(Arrays.asList(kill));
 		gson.from(resource).serialize();
 
-		String expectedLinks = "\"links\":[{\"rel\":\"kill\",\"href\":\"http://www.caelum.com.br/kill\"}]";
-		assertThat(result(), containsString(expectedLinks));
+		JSONObject jsonOrder = new JSONObject(result());
+		assertNotSame(JSONObject.NULL, jsonOrder);
+
+		JSONArray jsonListLinks;
+		jsonListLinks = jsonOrder.getJSONArray("links");
+		assertEquals(1, jsonListLinks.length());
+		
+		JSONObject jsonLink_1 = jsonListLinks.getJSONObject(0);
+		assertEquals("kill", jsonLink_1.get("rel"));
+		assertEquals("http://www.caelum.com.br/kill", jsonLink_1.get("href"));
 	}
 
 	@Test
-	public void shouldSerializeAllLinksIfThereAreTransitions() {
+	public void shouldSerializeAllLinksIfThereAreTransitions() throws Exception {
 		Relation kill = mock(Relation.class);
 		when(kill.getName()).thenReturn("kill");
 		when(kill.getUri()).thenReturn("/kill");
@@ -104,8 +124,20 @@ public class HipermediaResourceGsonJSONSerializerTest {
 		when(builder.getRelations()).thenReturn(Arrays.asList(kill, ressurect));
 		gson.from(resource).serialize();
 
-		String expectedLinks = "\"links\":[{\"rel\":\"kill\",\"href\":\"http://www.caelum.com.br/kill\"},{\"rel\":\"ressurect\",\"href\":\"http://www.caelum.com.br/ressurect\"}]";
-		assertThat(result(), containsString(expectedLinks));
+		JSONObject jsonOrder = new JSONObject(result());
+		assertNotSame(JSONObject.NULL, jsonOrder);
+
+		JSONArray jsonListLinks;
+		jsonListLinks = jsonOrder.getJSONArray("links");
+		assertEquals(2, jsonListLinks.length());
+		
+		JSONObject jsonLink_1 = jsonListLinks.getJSONObject(0);
+		assertEquals("kill", jsonLink_1.get("rel"));
+		assertEquals("http://www.caelum.com.br/kill", jsonLink_1.get("href"));
+		
+		JSONObject jsonLink_2 = jsonListLinks.getJSONObject(1);
+		assertEquals("ressurect", jsonLink_2.get("rel"));
+		assertEquals("http://www.caelum.com.br/ressurect", jsonLink_2.get("href"));
 	}
 
 	private String result() {

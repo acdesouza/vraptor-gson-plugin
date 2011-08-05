@@ -24,7 +24,14 @@ So, I write this one.
 
 ## CONFIGURATION
 
-1. Add the dependency to your project
+1. Add the dependency to your, maven, project
+
+    <dependency>
+      <groupId>br.com.caelum.vraptor-contrib</groupId>
+    	<artifactId>vraptor-gson-plugin</artifactId>
+    	<version>0.1.0</version>
+    </dependency>
+
 2. Add this to your web.xml:
 
     <!-- To enable it with Restfulie -->

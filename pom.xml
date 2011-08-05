@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.caelum.vraptor-contrib</groupId>
 	<artifactId>vraptor-gson-plugin</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<description>Serialization alternative do XStream, using Gson</description>
 
 	<properties>
@@ -35,7 +35,7 @@
 		<dependency>
 		    <groupId>br.com.caelum</groupId>
 		    <artifactId>vraptor</artifactId>
-		    <version>3.3.2-SNAPSHOT</version>
+		    <version>3.3.2</version>
 		</dependency>
 		
 		<!--  Gson: Java to Json conversion BEGIN -->

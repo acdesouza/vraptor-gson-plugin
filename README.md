@@ -24,7 +24,7 @@ So, I write this one.
 
 ## CONFIGURATION
 
-1. Add the dependency to your, maven, project
+1. Add the dependency to your, maven, project:
 
     <dependency>
       <groupId>br.com.caelum.vraptor-contrib</groupId>

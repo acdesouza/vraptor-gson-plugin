@@ -26,27 +26,27 @@ So, I write this one.
 
 1. Add the dependency to your, maven, project:
 
-    <dependency>
-      <groupId>br.com.caelum.vraptor-contrib</groupId>
-    	<artifactId>vraptor-gson-plugin</artifactId>
-    	<version>0.1.0</version>
-    </dependency>
+        <dependency>
+            <groupId>br.com.caelum.vraptor-contrib</groupId>
+    	    <artifactId>vraptor-gson-plugin</artifactId>
+    	    <version>0.1.0</version>
+        </dependency>
 
 2. Add this to your web.xml:
 
-    <!-- To enable it with Restfulie -->
-    <context-param>
-	  	<param-name>br.com.caelum.vraptor.packages</param-name>
-	  	<param-value>br.com.caelum.vraptor.restfulie,br.com.beyondclick.vraptor</param-value>
-	  </context-param>
+        <!-- To enable it with Restfulie -->
+        <context-param>
+	      	<param-name>br.com.caelum.vraptor.packages</param-name>
+	      	<param-value>br.com.caelum.vraptor.restfulie,br.com.beyondclick.vraptor</param-value>
+	    </context-param>
 
 Or
 
-    <!-- To enable it with Restfulie -->
-    <context-param>
-	  	<param-name>br.com.caelum.vraptor.packages</param-name>
-	  	<param-value>br.com.beyondclick.vraptor</param-value>
-	  </context-param>
+        <!-- To enable it with Restfulie -->
+        <context-param>
+	      	<param-name>br.com.caelum.vraptor.packages</param-name>
+	      	<param-value>br.com.beyondclick.vraptor</param-value>
+	    </context-param>
 
 ## USAGE
 
@@ -79,3 +79,4 @@ So you can access this resource, from terminal, using:
 ### 0.1.0
 
 This is the first version. So, no changes :)
+

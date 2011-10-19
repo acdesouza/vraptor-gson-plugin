@@ -76,6 +76,10 @@ So you can access this resource, from terminal, using:
 
 ## CHANGES
 
+### 0.1.1
+
+Update dependency to VRaptor 3.4.0
+
 ### 0.1.0
 
 This is the first version. So, no changes :)

@@ -24,17 +24,19 @@ import com.google.gson.JsonSerializer;
 /**
  * Gson implementation for JSONSerialization
  * 
- * Know limitation: you can not serialize objects with circular references since that will result in infinite recursion.
+ * Know limitation: you can not serialize objects with circular references since
+ * that will result in infinite recursion.
  * https://sites.google.com/site/gson/gson-user-guide#TOC-Object-Examples
  * 
  * @author ac de souza
  * @since 3.3.2
- *
+ * 
  */
 @Component
 public class GsonJSONSerialization implements JSONSerialization {
 
 	private final HttpServletResponse response;
+
 	public GsonJSONSerialization(HttpServletResponse response) {
 		this.response = response;
 	}
@@ -57,23 +59,29 @@ public class GsonJSONSerialization implements JSONSerialization {
 	}
 
 	public SerializerBuilder getSerializer(Writer writer) {
-            return new GsonJSONSerializer(getGson(), writer);
-    }
+		return new GsonJSONSerializer(getGson(), writer);
+	}
 
 	private GsonBuilder gsonBuilder;
-	protected Gson getGson() {
+
+	protected GsonBuilder getGsonBuilder() {
 		gsonBuilder = new GsonBuilder();
 		gsonBuilder.serializeNulls();
 		gsonBuilder.registerTypeAdapter(Date.class, new DateSerializer());
 		gsonBuilder.registerTypeAdapter(java.sql.Date.class, new SqlDateSerializer());
-		if( indented ) gsonBuilder.setPrettyPrinting();
-		return gsonBuilder.create();
+		if (indented)
+			gsonBuilder.setPrettyPrinting();
+		return gsonBuilder;
 	}
-	
+
+	protected Gson getGson() {
+		return this.getGsonBuilder().create();
+	}
+
 	private class DateSerializer implements JsonSerializer<Date> {
-	  public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
-	    return new JsonPrimitive(src.toString());
-	  }
+		public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+			return new JsonPrimitive(src.toString());
+		}
 	}
 
 	private class SqlDateSerializer implements JsonSerializer<java.sql.Date> {
@@ -81,13 +89,13 @@ public class GsonJSONSerialization implements JSONSerialization {
 			return new JsonPrimitive(new Date(src.getTime()).toString());
 		}
 	}
-	
 
 	public <T> NoRootSerialization withoutRoot() {
 		return this;
 	}
 
 	private boolean indented = false;
+
 	public JSONSerialization indented() {
 		indented = true;
 		return this;
